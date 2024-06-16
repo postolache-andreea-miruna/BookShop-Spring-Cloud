@@ -1,6 +1,8 @@
 package com.awbd.bookshopspringcloud.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -14,7 +16,8 @@ public class Authority {
     @Column(name = "authority", nullable = false, length = 50)
     private String authority;
 
-    @OneToMany(mappedBy = "authority")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "authority")//, cascade = CascadeType.ALL)
     private List<User> users;
 
     public Authority() {

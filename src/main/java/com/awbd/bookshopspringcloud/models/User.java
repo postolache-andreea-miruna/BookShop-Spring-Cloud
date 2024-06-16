@@ -1,5 +1,7 @@
 package com.awbd.bookshopspringcloud.models;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -29,11 +31,12 @@ public class User {
     @Column(name = "enabled", nullable = false)
     private boolean enabled = true;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = Authority.class)
     @JoinColumn(name = "authority_id")
     private Authority authority;
 
-    @OneToMany(mappedBy = "user")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "user") //, cascade = CascadeType.ALL)
     private List<Basket> baskets;
 
     public Authority getAuthority() {

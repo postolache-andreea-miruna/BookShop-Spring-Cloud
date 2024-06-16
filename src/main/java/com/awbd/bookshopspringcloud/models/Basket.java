@@ -1,6 +1,8 @@
 package com.awbd.bookshopspringcloud.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,6 +24,7 @@ public class Basket {
     @PrimaryKeyJoinColumn(name = "user_id")
     private User user;
 
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToMany(mappedBy = "basket")
     private List<BookBasket> baskets = null;
 

@@ -14,7 +14,8 @@ public class Coupon {
     @Column(name = "discount")
     private Double discount;
 
-    @OneToOne(cascade = CascadeType.ALL, targetEntity = User.class)
+ @OneToOne(cascade = CascadeType.ALL, targetEntity = User.class)
+//@OneToOne(cascade=CascadeType.PERSIST, targetEntity = User.class)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

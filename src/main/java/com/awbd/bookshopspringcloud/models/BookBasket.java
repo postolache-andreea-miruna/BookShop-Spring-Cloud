@@ -3,6 +3,7 @@ package com.awbd.bookshopspringcloud.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 
+
 @Entity
 @Table(name = "book_baskets")
 public class BookBasket {

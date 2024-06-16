@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 import java.util.Objects;
@@ -56,7 +58,8 @@ public class Book {
 //    @ManyToMany(targetEntity = Category.class)
 //    private List<Category> bookCategories = null;
 
-    @OneToMany(mappedBy = "book")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "book") //, cascade = CascadeType.ALL)
     private List<BookBasket> bookBaskets = null;
 
     public Book() {
