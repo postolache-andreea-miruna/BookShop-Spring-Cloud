@@ -1,5 +1,6 @@
 package com.awbd.bookshopspringcloud.models;
 
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
