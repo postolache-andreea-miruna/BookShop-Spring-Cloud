@@ -2,6 +2,110 @@
 
 ![image](https://github.com/postolache-andreea-miruna/BookShop-Spring-Cloud/assets/86727047/445307c5-d2cd-4693-95a4-2383a173d987)
 
+---
+
+<h2>Docker</h2>
+
+To run Docker from the Spring Java Application you need first to download the Docker Desktop from this link: https://docs.docker.com/desktop/ (x86_64 version). Then create an account and login in the application.
+
+In Spring Application create a Dockerfile following the steps: File -> New -> Dockerfile
+
+Insert this code in the Dockerfile:
+```agsl
+FROM openjdk:latest
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
+```
+
+Open a terminal and make the connection with your Docker account:
+```agsl
+docker login
+```
+Then insert the username (from parantheses) and the password.
+<p align="center">
+  <img src="Management/login-docker.png" alt="create image">
+</p>
+
+Create an image:
+```agsl
+docker build -t bookshop . 
+```
+<p align="center">
+  <img src="Management/create image.png" alt="create image">
+</p>
+
+See if the image is created:
+```agsl
+docker images
+```
+<p align="center">
+  <img src="Management/docker-images.png" alt="docker images">
+</p>
+
+```agsl
+docker pull mysql 
+```
+<p align="center">
+  <img src="Management/docker-pull-mysql.png" alt="docker pull mysql">
+</p>
+
+```agsl
+docker network create boot-mysql
+```
+<p align="center">
+  <img src="Management/docker-network-create-boot.png" alt="docker network create boot mysql">
+</p>
+
+```agsl
+docker run --name bookshop_mysql --network boot-mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=bookshopspringcloud -e MYSQL_PASSWORD=root  mysql 
+```
+<p align="center">
+  <img src="Management/docker-run-bookshop_mysql.png" alt="docker run bookshop_mysql">
+</p>
+
+Create a new resource named application-sqldocker.properties:
+
+```agsl
+spring.datasource.url=jdbc:mysql://bookshop_mysql:3306/bookshopspringcloud
+spring.datasource.username=awbd
+spring.datasource.password=awbd
+
+
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.sql.init.mode = never
+spring.sql.init.platform=mysql
+```
+
+<del>
+```agsl
+docker run -e "SPRING_PROFILES_ACTIVE=sqldocker" --name bookshop_sqldocker --network boot-mysql -p 8000:8000 bookshop
+```
+</del>
+
+```agsl
+docker run -e "SPRING_PROFILES_ACTIVE=sqldocker" --name bookshop_sqldocker --network boot-mysql -p 8001:8000 bookshop
+```
+
+---
+<h3>Verification existing images and containers</h3>
+
+<p align="center">
+  <img src="Management/verification-existing.png" alt="terminal verification">
+</p>
+
+<p align="center">
+  <img src="Management/docker-desktop-images.png" alt="Docker Desktop Images">
+</p>
+
+<p align="center">
+  <img src="Management/docker-desktop-containers.png" alt="Docker Desktop Containers">
+</p>
+
+
+
+---
+
 <p align="center">
   <sub>Project made by <i>Denisa Predescu</i> and <i>Miruna Andreea Postolache</i> for AWBD course, gr 405, 2nd Semester of 1st Year of Databases and Software Tehnologies Master Domain at University of Bucharest, 2024
   </sub>
