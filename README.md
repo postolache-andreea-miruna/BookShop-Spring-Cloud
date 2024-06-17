@@ -6,6 +6,11 @@
 
 <h2>Docker</h2>
 
+First add and run a maven configuration that clean and install the project
+```agsl
+clean install -Dmaven.test.skip=true
+```
+
 To run Docker from the Spring Java Application you need first to download the Docker Desktop from this link: https://docs.docker.com/desktop/ (x86_64 version). Then create an account and login in the application.
 
 In Spring Application create a Dockerfile following the steps: File -> New -> Dockerfile
@@ -43,6 +48,7 @@ docker images
   <img src="Management/docker-images.png" alt="docker images">
 </p>
 
+Create mysql image:
 ```agsl
 docker pull mysql 
 ```
@@ -50,6 +56,7 @@ docker pull mysql
   <img src="Management/docker-pull-mysql.png" alt="docker pull mysql">
 </p>
 
+Create a network for docker environment
 ```agsl
 docker network create boot-mysql
 ```
@@ -57,20 +64,21 @@ docker network create boot-mysql
   <img src="Management/docker-network-create-boot.png" alt="docker network create boot mysql">
 </p>
 
+Create mysql container
 ```agsl
-docker run --name bookshop_mysql --network boot-mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=bookshopspringcloud -e MYSQL_PASSWORD=root  mysql 
+docker run --name bookshop_mysql_container --network boot-mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=bookshopspringcloud -e MYSQL_PASSWORD=root  mysql 
 ```
 <p align="center">
   <img src="Management/docker-run-bookshop_mysql.png" alt="docker run bookshop_mysql">
 </p>
 
-Create a new resource named application-sqldocker.properties:
+Now that we have the mysql container, we need to make some changes to the resource so it will run on localhost and in docker environment also.
+Create a new resource named `application-sqldocker.properties`:
 
 ```agsl
-spring.datasource.url=jdbc:mysql://bookshop_mysql:3306/bookshopspringcloud
-spring.datasource.username=awbd
-spring.datasource.password=awbd
-
+spring.datasource.url=jdbc:mysql://bookshop_mysql_container:3306/bookshopspringcloud
+spring.datasource.username=root
+spring.datasource.password=root
 
 spring.jpa.hibernate.ddl-auto=create-drop
 spring.sql.init.mode = never
@@ -83,11 +91,13 @@ docker run -e "SPRING_PROFILES_ACTIVE=sqldocker" --name bookshop_sqldocker --net
 ```
 </del>
 
+Run the clean - install configuration then open a new and insert the following command:
 ```agsl
-docker run -e "SPRING_PROFILES_ACTIVE=sqldocker" --name bookshop_sqldocker --network boot-mysql -p 8001:8000 bookshop
+docker run -e "SPRING_PROFILES_ACTIVE=sqldocker" --name bookshop_mysql_docker --network boot-mysql -p 8001:8000 bookshop
 ```
 
 ---
+
 <h3>Verification existing images and containers</h3>
 
 <p align="center">
