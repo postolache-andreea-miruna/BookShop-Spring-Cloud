@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("mysql")
+
 public class DataLoader implements CommandLineRunner {
 
     private AuthorityRepository authorityRepository;
