@@ -10,7 +10,7 @@ public interface IBasketService {
 
     List<BookFromBasketDetails> findBooksFromCurrentBasket(int basketId);
 
-    Basket sentOrder(int userId);
+   // Basket sentOrder(int userId);
     Basket sentOrderFallback(int userId);
     Basket getBasket(int userId);
 
@@ -19,4 +19,6 @@ public interface IBasketService {
     Basket removeBookFromBasket(int bookId, int basketId);
 
     Basket decrementBookFromBasket(int bookId, int basketId);
+    Basket sendingOrder(String correlationId,int userId);
+
 }

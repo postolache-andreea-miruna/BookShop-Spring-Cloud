@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,14 +44,16 @@ public class BasketController {
     public ResponseEntity<Basket> createBasket(@PathVariable @Parameter(description = "User ID", required = true) int userId) {
         Basket basket = basketService.createBasket(userId);
 
-        Link sendLink = linkTo(methodOn(BasketController.class).sentOrder(userId)).withRel("sendOrder");
-        basket.add(sendLink);
+        //no zipkin
+//        Link sendLink = linkTo(methodOn(BasketController.class).sentOrder(userId)).withRel("sendOrder");
+//        basket.add(sendLink);
 
         Link createLink = linkTo(methodOn(BasketController.class).createBasket(userId)).withSelfRel();
         basket.add(createLink);
 
         return ResponseEntity.ok(basket);
     }
+
 //    @RequestMapping("/sentOrder")
 //    @CircuitBreaker(name = "salesOffId", fallbackMethod = "sentOrderFallback")
 //    public ModelAndView sentOrder(Model model)
@@ -76,20 +79,39 @@ public class BasketController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
+    //uncomment when don't use zipkin
+//    @PatchMapping("/sentOrder/{userId}")
+//    @CircuitBreaker(name = "salesOffId", fallbackMethod = "sentOrderFallback")
+//    public ResponseEntity<Basket> sentOrder(int userId)
+//    {
+//        Basket basket = basketService.sentOrder(userId);
+//        Link sendLink = linkTo(methodOn(BasketController.class).sentOrder(userId)).withSelfRel();
+//        basket.add(sendLink);
+//
+//        Link createLink = linkTo(methodOn(BasketController.class).createBasket(userId)).withRel("createOrder");
+//        basket.add(createLink);
+//
+//        return ResponseEntity.ok(basket);
+//    }
+//for zipkin
     @PatchMapping("/sentOrder/{userId}")
     @CircuitBreaker(name = "salesOffId", fallbackMethod = "sentOrderFallback")
-    public ResponseEntity<Basket> sentOrder(int userId)
+    public ResponseEntity<Basket> sentOrder(@RequestHeader("awbd-id") String correlationId,int userId)
     {
-        Basket basket = basketService.sentOrder(userId);
-        Link sendLink = linkTo(methodOn(BasketController.class).sentOrder(userId)).withSelfRel();
-        basket.add(sendLink);
+        Basket basket = basketService.sendingOrder(correlationId,userId);
 
         Link createLink = linkTo(methodOn(BasketController.class).createBasket(userId)).withRel("createOrder");
         basket.add(createLink);
 
-        return ResponseEntity.ok(basket);
+        return ResponseEntity.status(HttpStatus.OK).body(basket);
     }
-    public ResponseEntity<Basket> sentOrderFallback(int userId, Throwable throwable)
+    //no zipkin
+//    public ResponseEntity<Basket> sentOrderFallback(int userId, Throwable throwable)
+//    {
+//        Basket basket = basketService.sentOrderFallback(userId);
+//        return ResponseEntity.ok(basket);
+//    }
+    public ResponseEntity<Basket> sentOrderFallback(String correlationId,int userId, Throwable throwable)
     {
         Basket basket = basketService.sentOrderFallback(userId);
         return ResponseEntity.ok(basket);
@@ -104,9 +126,9 @@ public class BasketController {
     public ResponseEntity<Basket> getBasket(@PathVariable @Parameter(description = "User ID", required = true) int userId)
     {
         Basket basket = basketService.getBasket(userId);
-
-        Link sendLink = linkTo(methodOn(BasketController.class).sentOrder(userId)).withRel("sendOrder");
-        basket.add(sendLink);
+        //no zipkin
+//        Link sendLink = linkTo(methodOn(BasketController.class).sentOrder(userId)).withRel("sendOrder");
+//        basket.add(sendLink);
 
         Link getLink = linkTo(methodOn(BasketController.class).getBasket(userId)).withSelfRel();
         basket.add(getLink);

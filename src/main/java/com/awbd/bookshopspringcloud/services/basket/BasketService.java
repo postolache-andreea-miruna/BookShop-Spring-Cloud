@@ -60,73 +60,147 @@ public class BasketService implements IBasketService {
 
         return basket;
     }
+///////////////
+    ////
+    //sendingOrder is for zipkin
+@Transactional
+@Override
+public Basket sendingOrder(String correlationId,int userId) {
+    int booksCount = 0;
+    int bookDiscount = 0;
 
-    @Transactional
-    @Override
-    public Basket sentOrder(int userId) {
-        int booksCount = 0;
-        int bookDiscount = 0;
+    Basket basket = basketRepository.findByUserId(userId).orElseThrow(
+            () -> new NoFoundElementException("User does not have a current basket"));
 
-        Basket basket = basketRepository.findByUserId(userId).orElseThrow(
-                () -> new NoFoundElementException("User does not have a current basket"));
-
-        if (basket.getCost() == 0)
-            throw new NoFoundElementException("User does not have books in basket");
+    if (basket.getCost() == 0)
+        throw new NoFoundElementException("User does not have books in basket");
 
 
-        //Sales Off logic
-        SalesOff salesOff = salesOffServiceProxy.getingSalesOff();
+    //Sales Off logic
+    SalesOff salesOff = salesOffServiceProxy.getSalesOff(correlationId).getBody();
 
-        List<String> salesOffCategories = Arrays.asList(salesOff.getCategories()).stream()
+
+    List<String> salesOffCategories = Arrays.asList(salesOff.getCategories()).stream()
+            .flatMap(s -> Arrays.stream(s.split(",")))
+            .distinct()
+            .toList();
+
+    logger.info(salesOff.getVersionId());
+    logger.info("correlation-id subscription: {}", correlationId);
+
+    List<BookFromBasketDetails> booksBasket = basketRepository.findBooksFromCurrentBasket(basket.getId());
+    for (BookFromBasketDetails book : booksBasket) {
+        int okCategory = 0;
+        List<String> bookCategories = Arrays.asList(book.getCategories()).stream()
                 .flatMap(s -> Arrays.stream(s.split(",")))
                 .distinct()
                 .toList();
+        for(String bookCategory : bookCategories) {
+            if(salesOffCategories.contains(bookCategory)){
+                okCategory = okCategory + 1;
 
-        logger.info(salesOff.getVersionId());
-        List<BookFromBasketDetails> booksBasket = basketRepository.findBooksFromCurrentBasket(basket.getId());
-        for (BookFromBasketDetails book : booksBasket) {
-            int okCategory = 0;
-            List<String> bookCategories = Arrays.asList(book.getCategories()).stream()
-                    .flatMap(s -> Arrays.stream(s.split(",")))
-                    .distinct()
-                    .toList();
-            for(String bookCategory : bookCategories) {
-                if(salesOffCategories.contains(bookCategory)){
-                    okCategory = okCategory + 1;
-
-                }
-            }
-            if(okCategory!=0 || salesOff.getAuthors().contains(book.getAuthor_name())){
-                booksCount = booksCount + book.getCopies();
             }
         }
-
-        if(booksCount>=salesOff.getLowNoBooks() && booksCount<=salesOff.getMediumNoBooks())
-            bookDiscount = salesOff.getLowSalesOff();
-        if (booksCount>salesOff.getMediumNoBooks() && booksCount<=salesOff.getHighNoBooks()) {
-            bookDiscount = salesOff.getMediumSalesOff();
+        if(okCategory!=0 || salesOff.getAuthors().contains(book.getAuthor_name())){
+            booksCount = booksCount + book.getCopies();
         }
-        if (booksCount>salesOff.getHighNoBooks())
-            bookDiscount = salesOff.getHighSalesOff();
-        logger.info(String.valueOf(bookDiscount));
-        // coupon logic
-        Coupon coupon = couponService.findCoupon(userId);
-
-        if (coupon != null) {
-            basket.setCost((1 - (coupon.getDiscount()+bookDiscount)/100) * basket.getCost());
-            coupon.setUser(null);
-            couponService.delete(coupon);
-        }
-
-        if (basket.getCost() > 100) {
-            User user = userService.getUser(userId);
-            couponService.insert(10.0, user);
-
-        }
-        basket.setCost((1 - (double) bookDiscount /100) * basket.getCost());
-        basket.setSent(true);
-        return basketRepository.save(basket);
     }
+
+    if(booksCount>=salesOff.getLowNoBooks() && booksCount<=salesOff.getMediumNoBooks())
+        bookDiscount = salesOff.getLowSalesOff();
+    if (booksCount>salesOff.getMediumNoBooks() && booksCount<=salesOff.getHighNoBooks()) {
+        bookDiscount = salesOff.getMediumSalesOff();
+    }
+    if (booksCount>salesOff.getHighNoBooks())
+        bookDiscount = salesOff.getHighSalesOff();
+    logger.info(String.valueOf(bookDiscount));
+    // coupon logic
+    Coupon coupon = couponService.findCoupon(userId);
+
+    if (coupon != null) {
+        basket.setCost((1 - (coupon.getDiscount()+bookDiscount)/100) * basket.getCost());
+        coupon.setUser(null);
+        couponService.delete(coupon);
+    }
+
+    if (basket.getCost() > 100) {
+        User user = userService.getUser(userId);
+        couponService.insert(10.0, user);
+
+    }
+    basket.setCost((1 - (double) bookDiscount /100) * basket.getCost());
+    basket.setSent(true);
+    return basketRepository.save(basket);
+}
+
+
+    ///////////////when no zipkin
+//    @Transactional
+//    @Override
+//    public Basket sentOrder(int userId) {
+//        int booksCount = 0;
+//        int bookDiscount = 0;
+//
+//        Basket basket = basketRepository.findByUserId(userId).orElseThrow(
+//                () -> new NoFoundElementException("User does not have a current basket"));
+//
+//        if (basket.getCost() == 0)
+//            throw new NoFoundElementException("User does not have books in basket");
+//
+//
+//        //Sales Off logic
+//        SalesOff salesOff = salesOffServiceProxy.getingSalesOff();
+//
+//        List<String> salesOffCategories = Arrays.asList(salesOff.getCategories()).stream()
+//                .flatMap(s -> Arrays.stream(s.split(",")))
+//                .distinct()
+//                .toList();
+//
+//        logger.info(salesOff.getVersionId());
+//        List<BookFromBasketDetails> booksBasket = basketRepository.findBooksFromCurrentBasket(basket.getId());
+//        for (BookFromBasketDetails book : booksBasket) {
+//            int okCategory = 0;
+//            List<String> bookCategories = Arrays.asList(book.getCategories()).stream()
+//                    .flatMap(s -> Arrays.stream(s.split(",")))
+//                    .distinct()
+//                    .toList();
+//            for(String bookCategory : bookCategories) {
+//                if(salesOffCategories.contains(bookCategory)){
+//                    okCategory = okCategory + 1;
+//
+//                }
+//            }
+//            if(okCategory!=0 || salesOff.getAuthors().contains(book.getAuthor_name())){
+//                booksCount = booksCount + book.getCopies();
+//            }
+//        }
+//
+//        if(booksCount>=salesOff.getLowNoBooks() && booksCount<=salesOff.getMediumNoBooks())
+//            bookDiscount = salesOff.getLowSalesOff();
+//        if (booksCount>salesOff.getMediumNoBooks() && booksCount<=salesOff.getHighNoBooks()) {
+//            bookDiscount = salesOff.getMediumSalesOff();
+//        }
+//        if (booksCount>salesOff.getHighNoBooks())
+//            bookDiscount = salesOff.getHighSalesOff();
+//        logger.info(String.valueOf(bookDiscount));
+//        // coupon logic
+//        Coupon coupon = couponService.findCoupon(userId);
+//
+//        if (coupon != null) {
+//            basket.setCost((1 - (coupon.getDiscount()+bookDiscount)/100) * basket.getCost());
+//            coupon.setUser(null);
+//            couponService.delete(coupon);
+//        }
+//
+//        if (basket.getCost() > 100) {
+//            User user = userService.getUser(userId);
+//            couponService.insert(10.0, user);
+//
+//        }
+//        basket.setCost((1 - (double) bookDiscount /100) * basket.getCost());
+//        basket.setSent(true);
+//        return basketRepository.save(basket);
+//    }
 
 
     @Transactional
