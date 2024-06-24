@@ -289,6 +289,7 @@ http://127.0.0.1:9411/zipkin/
 
 ---
 <h2>Resilience4j</h2>
+
 `Resilience4j` is used to avoid errors/issues when the microservice being called or the method called from that microservice
 does not work. CircuitBreaker is used to avoid cascading failure, and fallback methods are created.
 
