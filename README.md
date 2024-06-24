@@ -5,9 +5,11 @@
   </sub>
 </p>
 
----
-## Project requirements
+<details><summary>Project requirements</summary>
+
 ![image](https://github.com/postolache-andreea-miruna/BookShop-Spring-Cloud/assets/86727047/445307c5-d2cd-4693-95a4-2383a173d987)
+
+</details>
 
 ---
 
