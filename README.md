@@ -1,7 +1,7 @@
 # BookShop
 
 <p align="center">
-  <sub>Project made by <i>Denisa Predescu</i> and <i>Miruna Andreea Postolache</i> for AWBD course, gr 405, 2nd Semester of 1st Year of Databases and Software Tehnologies Master Domain at University of Bucharest, 2024
+  <sub>Project made by <a href="https://github.com/denisapredescu"><i>Denisa Predescu</i></a> and <a href="https://github.com/postolache-andreea-miruna"><i>Andreea Miruna Postolache</i></a> for AWBD course, gr 405, 2nd Semester of 1st Year of Databases and Software Tehnologies Master Domain at University of Bucharest, 2024
   </sub>
 </p>
 
