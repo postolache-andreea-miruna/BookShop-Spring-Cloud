@@ -16,44 +16,63 @@
 <p><strong>The current project is a microservice that contains and has linked multiple concepts from RestAPI in Spring Cloud Architecture presenting below.   
 </strong></p>
 
+#### Projects running order:
+1. [Spring Cloud Config Server](https://github.com/postolache-andreea-miruna/config-server)
+2. [Eureka Server](https://github.com/postolache-andreea-miruna/server_eureka)
+3. [Gateway - Cloud Load Balancer](https://github.com/postolache-andreea-miruna/gateway)
+4. [Sales Off Microservice](https://github.com/postolache-andreea-miruna/salesOff)
+5. [BookShop-Spring-Cloud](https://github.com/postolache-andreea-miruna/BookShop-Spring-Cloud)
+
 ---
 
 <h2>Spring Cloud Config Server</h2>
 
 Links and descriptions of projects:
+<ul>
+<li><p id="config-file">Link to GitHub configuration files project (push data to be collected by config server and then used in main project): <a href="https://github.com/postolache-andreea-miruna/configuration_files">Click here</a></p>
+  
+  <details><summary>Present all the config files properties</summary>
+  
+  <p align="center">
+    <img src="Management/config-file-properties-files.png" alt="config file properties files">
+  </p>
+  
+  </details>
+  
+  <details><summary>Example of config file - general sales off</summary>
+  
+  <p align="center">
+    <img src="Management/config-file-example-salesOff.png" alt="config file salesOff">
+  </p>
+  
+  </details>
+</li> 
 
-- <p id="config-file">Link to GitHub configuration files project (push data to be collected by config server and then used in main project): <a href="https://github.com/postolache-andreea-miruna/configuration_files">Click here</a></p>
+<li> <p>Link to spring cloud configuration server (get the data from configuration files): <a href="https://github.com/postolache-andreea-miruna/config-server">Click here</a></p>
 
-<details><summary>Present all the config files properties</summary>
+  <details><summary>Picture configuration server properties file</summary>
+  
+  <p align="center">
+    <img src="Management/config-server-properties.png" alt="config server properties">
+  </p>
+  
+  </details>
+</li> 
 
-<p align="center">
-  <img src="Management/config-file-properties-files.png" alt="config file properties files">
+<li> <p id="sales-off">Link to GitHub microservices project (the data collected by the config-server is here taken by the microservices): <a href="https://github.com/postolache-andreea-miruna/salesOff">Click here</a>
 </p>
 
-</details>
-
-<details><summary>Example of config file - general sales off</summary>
-
-<p align="center">
-  <img src="Management/config-file-example-salesOff.png" alt="config file salesOff">
-</p>
-
-</details>
-
-- Link to spring cloud configuration server (get the data from configuration files): <a href="https://github.com/postolache-andreea-miruna/config-server">Click here</a>
-
-<details><summary>Picture configuration server properties file</summary>
-
-<p align="center">
-  <img src="Management/config-server-properties.png" alt="config server properties">
-</p>
-
-</details>
-
-- <p id="sales-off">Link to GitHub microservices project (the data collected by the config-server is here taken by the microservices): <a href="https://github.com/postolache-andreea-miruna/salesOff">Click here</a>
-</p>
-
-This microservice is called `Sales Off` and store the discounts from bookshop application.
+  This microservice is called `Sales Off` and store the discounts for bookshop application.
+  
+  <details><summary>There were created 2 instantes of SalesOff application (runs on 2 different ports)</summary>
+  
+  <p align="center">
+    <img src="Management/salesOff-instances.jpg" alt="salesOff-instances">
+  </p>
+  
+  </details>
+</li> 
+</ul>
 
 ---
 
