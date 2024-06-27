@@ -453,30 +453,66 @@ Run the project to automatically open the swagger in browser
 
 ---
 ## Error handling
+
+<details><summary>
+Picture with error handling folder in Spring project
+</summary>
+<p align="center">
+  <img src="Management/error-handling-folder.jpg" alt="error handling folder">
+</p>
+</details>
+
+### Example of exception usage - `NoFoundElementException`
+
 When the user has no books in the basket and he/she click on sent button aka run the `sendingOrder` method 
 the `NoFoundElementException` is caught and a custom error will be thrown as a response. The response contains the 
 status, the error title and the error message.
-- Custom Error Handling
+
+<details><summary>
+Custom Error Handling
+</summary>
 <p align="center">
     <img src="Management/NoFoundElementException.png" alt="NoFoundElementException">
 </p>
+</details>
 
-- Throw exception in BasketService
+<details><summary>
+Throw exception in BasketService
+</summary>
 <p align="center">
     <img src="Management/throw-exception-sendingOrder.jpg" alt="sendingOrder">
 </p>
+</details>
 
-- See exception in swagger
+<details><summary>
+See exception in swagger
+</summary>
 <p align="center">
     <img src="Management/swagger-error-not-found.jpg" alt="swagger-error-not-found">
 </p>
+</details>
 
 ---
 ## HATEOS links
 HATEOAS links helps in observing the possibilities that can be achieved with the elements already entered 
 in the required fields.
 
+### Example of HATEOS usage
+
+<details><summary>
+Picture with `getAvailableBooks` method in code
+</summary>
 <p align="center">
     <img src="Management/getAvailableBooks.jpg" alt="getAvailableBooks">
 </p>
+</details>
+
+<details><summary>
+Picture with `getAvailableBooks` method in Swagger
+</summary>
+<p align="center">
+  <img src="Management/swagger-getAvailableBooks-with-hateos-links.jpg" alt="error handling folder">
+</p>
+</details>
+
 
